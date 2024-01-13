@@ -5,7 +5,7 @@ Write-Host "Calculate Packages"
 $artifactType = $env:artifactType
 $artifactVersion = $env:artifactVersion
 
-$artifactUrls = Get-BcArtfactUrl -type $artifactType -version $artifactVersion -select all
+$artifactUrls = Get-BcArtifactUrl -type $artifactType -version $artifactVersion -select all
 $packages = $artifactUrls+@('/////platform') | ForEach-Object { @{ "package" = "$_".Split('/')[5] } }
 
 Write-Host "Packages:"
