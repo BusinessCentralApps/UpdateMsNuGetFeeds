@@ -1,0 +1,48 @@
+name: Generate Business Central Artifacts
+
+# Controls when the workflow will run
+on:
+  workflow_dispatch:
+    inputs:
+      artifactVersion:
+        description: Business Central Version to generate nuget packages for
+        required: true
+        default: ''
+      artifactType:
+        description: Type of Business Central artifacts to use, onprem or sandbox (leave empty to use ARTIFACTTYPE variable, default is sandbox)
+        required: false
+        default: ''
+      run-name:
+        description: Name of the run (leave empty to use the default name)
+        required: false
+        default: ''
+
+run-name: ${{ github.event.inputs.run-name != '' && github.event.inputs.run-name || github.workflow }}
+
+concurrency:
+  group: ${{ github.event.inputs.run-name != '' && github.event.inputs.run-name || github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  CalculatePackages:
+    name: Calculate Packages
+    runs-on: [ ubuntu-latest ]
+    outputs:
+      packages: ${{ steps.CalculatePackages.outputs.packages }}
+      packagesCount: ${{ steps.CalculatePackages.outputs.packagesCount }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Mask input
+        shell: pwsh
+        run: |
+          . (Join-Path $env:GITHUB_WORKSPACE "MaskInput.ps1")
+
+      - name: CalculatePackages
+        shell: pwsh
+        env:
+          artifactVersion: ${{ github.event.inputs.artifactVersion != '' && github.event.inputs.artifactVersion || vars.ARTIFACTVERSION }}
+          artifactType: ${{ github.event.inputs.artifactType != '' && github.event.inputs.artifactType || vars.ARTIFACTTYPE }}
+        run: |
+          . (Join-Path $env:GITHUB_WORKSPACE "CalculatePackages.ps1")
