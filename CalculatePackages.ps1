@@ -3,7 +3,9 @@ Write-Host "Calculate Packages"
 . (Join-Path $PSScriptRoot "HelperFunctions.ps1")
 
 $artifactType = $env:artifactType
+if ($artifactType -eq '') { $artifactType = 'sandbox' }
 $artifactVersion = $env:artifactVersion
+if (([System.Version]$artifactVersion).Revision -eq -1) { throw "Invalid artifactVersion '$artifactVersion'" }
 
 $artifactUrls = Get-BcArtifactUrl -type $artifactType -version $artifactVersion -select all
 $packages = $artifactUrls+@('/////platform') | ForEach-Object { @{ "package" = "$_".Split('/')[5] } }
