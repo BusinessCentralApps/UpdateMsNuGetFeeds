@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       artifactVersion:
-        description: Business Central Version to generate nuget packages for
+        description: Business Central Version to generate packages for
         required: true
         default: ''
       artifactType:
