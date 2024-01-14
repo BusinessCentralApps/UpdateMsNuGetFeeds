@@ -18,8 +18,7 @@ else {
     throw "Invalid feedUrl '$feedUrl'"
 }
 $feedToken = $env:feedToken
-
-Write-Output $feedToken | az devops login --organization $organization
+$env:AZURE_DEVOPS_EXT_PAT = $feedToken
 
 $artifactUrl = Get-BcArtifactUrl -type $artifactType -version $artifactVersion -country $package
 $folders = Download-Artifacts -artifactUrl $artifactUrl -includePlatform:($package -eq 'base')
@@ -31,4 +30,9 @@ foreach($folder in $folders) {
     Write-Host "package: $package"
     Write-Host "folder: $folder"
     Write-Host "name: $name"
+    $version = [System.Version]$artifactVersion
+    $packageName = "$($artifactType).$($version.Major).$($package)"
+    $packageVersion = "$($version.Major).$($version.Build).$($version.Revision)"
+    $packageDescription = "Package for $artifactType $artifactVersion $package"
+    az artifacts universal publish --organization $organization --project=$project --scope project --feed $feed --name $packageName --version $packageVersion --description $packageDescription --path .
 }
