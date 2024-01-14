@@ -6,19 +6,19 @@ on:
     inputs:
       feedUrl:
         description: Universal package feed url
-        required: false
-        default: 'https://dev.azure.com/freddydk/apps/_artifacts/feed/universal'
+        required: true
+        default: ''
       feedToken:
         description: Universal package feed token
-        required: false
+        required: true
         default: ''
       artifactVersion:
         description: Business Central Version to generate packages for
         required: true
         default: ''
       artifactType:
-        description: Type of Business Central artifacts to use, onprem or sandbox (leave empty to use ARTIFACTTYPE variable, default is sandbox)
-        required: false
+        description: Type of Business Central artifacts to use
+        required: true
         default: ''
       run-name:
         description: Name of the run (leave empty to use the default name)
@@ -32,8 +32,8 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  artifactVersion: ${{ github.event.inputs.artifactVersion != '' && github.event.inputs.artifactVersion || vars.ARTIFACTVERSION }}
-  artifactType: ${{ github.event.inputs.artifactType != '' && github.event.inputs.artifactType || vars.ARTIFACTTYPE }}
+  artifactVersion: ${{ github.event.inputs.artifactVersion }}
+  artifactType: ${{ github.event.inputs.artifactType }}
 
 jobs:
   CalculatePackages:
@@ -81,8 +81,8 @@ jobs:
         timeout-minutes: 15
         continue-on-error: true
         env:
-          feedToken: ${{ github.event.inputs.feedToken != '' && github.event.inputs.feedToken || secrets.FEEDTOKEN }}
-          feedUrl: ${{ github.event.inputs.feedUrl != '' && github.event.inputs.feedUrl || vars.FEEDURL }}
+          AZURE_DEVOPS_EXT_PAT: ${{ github.event.inputs.feedToken }}
+          feedUrl: ${{ github.event.inputs.feedUrl }}
           package: ${{ matrix.package }}
         run: |
           . (Join-Path $env:GITHUB_WORKSPACE "GenerateUniversalPackage.ps1")
@@ -92,8 +92,8 @@ jobs:
         shell: pwsh
         timeout-minutes: 60
         env:
-          feedToken: ${{ github.event.inputs.feedToken != '' && github.event.inputs.feedToken || secrets.FEEDTOKEN }}
-          feedUrl: ${{ github.event.inputs.feedUrl != '' && github.event.inputs.feedUrl || vars.FEEDURL }}
+          AZURE_DEVOPS_EXT_PAT: ${{ github.event.inputs.feedToken }}
+          feedUrl: ${{ github.event.inputs.feedUrl }}
           package: ${{ matrix.package }}
         run: |
           . (Join-Path $env:GITHUB_WORKSPACE "GenerateUniversalPackage.ps1")
