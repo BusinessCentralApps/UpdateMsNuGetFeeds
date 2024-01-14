@@ -23,6 +23,10 @@ concurrency:
   group: ${{ github.event.inputs.run-name != '' && github.event.inputs.run-name || github.workflow }}
   cancel-in-progress: false
 
+env:
+  artifactVersion: ${{ github.event.inputs.artifactVersion != '' && github.event.inputs.artifactVersion || vars.ARTIFACTVERSION }}
+  artifactType: ${{ github.event.inputs.artifactType != '' && github.event.inputs.artifactType || vars.ARTIFACTTYPE }}
+
 jobs:
   CalculatePackages:
     name: Calculate Packages
@@ -41,8 +45,30 @@ jobs:
 
       - name: CalculatePackages
         shell: pwsh
-        env:
-          artifactVersion: ${{ github.event.inputs.artifactVersion != '' && github.event.inputs.artifactVersion || vars.ARTIFACTVERSION }}
-          artifactType: ${{ github.event.inputs.artifactType != '' && github.event.inputs.artifactType || vars.ARTIFACTTYPE }}
         run: |
           . (Join-Path $env:GITHUB_WORKSPACE "CalculatePackages.ps1")
+
+  GenerateUniversalPackages:
+    needs: [ CalculatePackages ]
+    if: needs.CalculatePackages.outputs.packagesCount > 0
+    runs-on: [ ubuntu-latest ]
+    strategy:
+      matrix:
+        include: ${{ fromJson(needs.CalculatePackages.outputs.packages) }}
+      fail-fast: false
+    name: ${{ matrix.package }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Mask input
+        shell: pwsh
+        run: |
+          . (Join-Path $env:GITHUB_WORKSPACE "MaskInput.ps1")
+
+      - name: Generate Universal Package
+        shell: pwsh
+        env:
+          package: ${{ matrix.package }}
+        run: |
+          . (Join-Path $env:GITHUB_WORKSPACE "GenerateUniversalPackage.ps1")

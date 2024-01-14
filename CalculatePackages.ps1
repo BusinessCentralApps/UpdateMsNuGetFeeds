@@ -8,7 +8,7 @@ $artifactVersion = $env:artifactVersion
 if (([System.Version]$artifactVersion).Revision -eq -1) { throw "Invalid artifactVersion '$artifactVersion'" }
 
 $artifactUrls = Get-BcArtifactUrl -type $artifactType -version $artifactVersion -select all
-$packages = $artifactUrls+@('/////platform') | ForEach-Object { @{ "package" = "$_".Split('/')[5] } }
+$packages = $artifactUrls | ForEach-Object { @{ "package" = "$_".Split('/')[5] } }
 
 Write-Host "Packages:"
 $packages | ForEach-Object { Write-Host "- $(ConvertTo-Json -InputObject $_ -Compress)" }
