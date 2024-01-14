@@ -5,6 +5,7 @@ Write-Host "Calculate Packages"
 $artifactType = $env:artifactType
 if ($artifactType -eq '') { $artifactType = 'sandbox' }
 $artifactVersion = $env:artifactVersion
+$package = $env:package
 
 $artifactUrl = Get-BcArtifactUrl -type $artifactType -version $artifactVersion -country $package
 $folders = Download-Artifacts -artifactUrl $artifactUrl -includePlatform:($package -eq 'base')

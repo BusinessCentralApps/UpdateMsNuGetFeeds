@@ -68,7 +68,19 @@ jobs:
           . (Join-Path $env:GITHUB_WORKSPACE "MaskInput.ps1")
 
       - name: Generate Universal Package
+        id: firstAttempt
         shell: pwsh
+        timeout-minutes: 15
+        continue-on-error: true
+        env:
+          package: ${{ matrix.package }}
+        run: |
+          . (Join-Path $env:GITHUB_WORKSPACE "GenerateUniversalPackage.ps1")
+
+      - name: Generate Universal Package (retry)
+        if: steps.firstAttempt.outcome == 'Failure'
+        shell: pwsh
+        timeout-minutes: 60
         env:
           package: ${{ matrix.package }}
         run: |
