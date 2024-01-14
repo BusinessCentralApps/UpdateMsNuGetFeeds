@@ -29,10 +29,10 @@ foreach($folder in $folders) {
     Write-Host "folder: $folder"
     Write-Host "name: $name"
     $version = [System.Version]$artifactVersion
-    $packageName = "$($artifactType).$($version.Major).$($name)"
+    $packageName = "$($artifactType).$($name).$($version.Major)"
     $packageVersion = "$($version.Minor).$($version.Build).$($version.Revision)"
     $packageDescription = "Package for $artifactType $artifactVersion $name"
-    Write-Host "Uploading $packageName $packageVersion to $feed"
+    Write-Host "Uploading $packageName.$packageVersion to $feed"
     az artifacts universal publish --organization $organization --project=$project --scope project --feed $feed --name $packageName --version $packageVersion --description $packageDescription --path .
     Write-Host "done uploading"
 }
