@@ -4,6 +4,14 @@ name: Generate Business Central Artifacts
 on:
   workflow_dispatch:
     inputs:
+      feedUrl:
+        description: Universal package feed url
+        required: false
+        default: 'https://dev.azure.com/freddydk/apps/_artifacts/feed/universal'
+      feedToken:
+        description: Universal package feed token
+        required: false
+        default: ''
       artifactVersion:
         description: Business Central Version to generate packages for
         required: true
@@ -73,6 +81,8 @@ jobs:
         timeout-minutes: 15
         continue-on-error: true
         env:
+          feedToken: ${{ github.event.inputs.feedToken != '' && github.event.inputs.feedToken || secrets.FEEDTOKEN }}
+          feedUrl: ${{ github.event.inputs.feedUrl != '' && github.event.inputs.feedUrl || vars.FEEDURL }}
           package: ${{ matrix.package }}
         run: |
           . (Join-Path $env:GITHUB_WORKSPACE "GenerateUniversalPackage.ps1")
@@ -82,6 +92,8 @@ jobs:
         shell: pwsh
         timeout-minutes: 60
         env:
+          feedToken: ${{ github.event.inputs.feedToken != '' && github.event.inputs.feedToken || secrets.FEEDTOKEN }}
+          feedUrl: ${{ github.event.inputs.feedUrl != '' && github.event.inputs.feedUrl || vars.FEEDURL }}
           package: ${{ matrix.package }}
         run: |
           . (Join-Path $env:GITHUB_WORKSPACE "GenerateUniversalPackage.ps1")
