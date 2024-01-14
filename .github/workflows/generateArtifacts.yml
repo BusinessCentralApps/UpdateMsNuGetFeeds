@@ -32,8 +32,8 @@ jobs:
     name: Calculate Packages
     runs-on: [ ubuntu-latest ]
     outputs:
-      packages: ${{ steps.CalculatePackages.outputs.packages }}
-      packagesCount: ${{ steps.CalculatePackages.outputs.packagesCount }}
+      packages: ${{ steps.CalculatePackages.outputs.Packages }}
+      packagesCount: ${{ steps.CalculatePackages.outputs.PackagesCount }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -44,6 +44,7 @@ jobs:
           . (Join-Path $env:GITHUB_WORKSPACE "MaskInput.ps1")
 
       - name: CalculatePackages
+        id: CalculatePackages
         shell: pwsh
         run: |
           . (Join-Path $env:GITHUB_WORKSPACE "CalculatePackages.ps1")

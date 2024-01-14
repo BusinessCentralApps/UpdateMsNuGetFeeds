@@ -11,7 +11,7 @@ $artifactUrls = Get-BcArtifactUrl -type $artifactType -version $artifactVersion 
 $packages = $artifactUrls | ForEach-Object { @{ "package" = "$_".Split('/')[5] } }
 
 Write-Host "Packages:"
-$packages | ForEach-Object { Write-Host "- $(ConvertTo-Json -InputObject $_ -Compress)" }
+ConvertTo-Json -InputObject @($packages) -Compress | Out-Host
 
 Add-Content -Path $ENV:GITHUB_OUTPUT -Value "Packages=$(ConvertTo-Json -InputObject @($packages) -Compress)" -Encoding UTF8
 Add-Content -Path $ENV:GITHUB_OUTPUT -Value "PackagesCount=$($packages.Count)" -Encoding UTF8
