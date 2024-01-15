@@ -12,14 +12,18 @@ on:
         description: Universal package feed token
         required: true
         default: ''
-      artifactVersion:
-        description: Business Central Version to generate packages for
-        required: true
-        default: ''
       artifactType:
         description: Type of Business Central artifacts to use
         required: true
         default: ''
+      artifactVersion:
+        description: Business Central Version to generate packages for
+        required: true
+        default: ''
+      country:
+        description: Localization of Business Central (or * for all)
+        required: false
+        default: '*'
       run-name:
         description: Name of the run (leave empty to use the default name)
         required: false
@@ -54,6 +58,8 @@ jobs:
       - name: CalculatePackages
         id: CalculatePackages
         shell: pwsh
+        env:
+          country: ${{ github.event.inputs.country }}
         run: |
           . (Join-Path $env:GITHUB_WORKSPACE "CalculatePackages.ps1")
 
