@@ -12,6 +12,10 @@ on:
         description: Universal package feed token
         required: true
         default: ''
+      storageAccount:
+        description: StorageAccount for the artifacts
+        required: true
+        default: ''
       artifactType:
         description: Type of Business Central artifacts to use
         required: true
@@ -38,6 +42,7 @@ concurrency:
 env:
   artifactVersion: ${{ github.event.inputs.artifactVersion }}
   artifactType: ${{ github.event.inputs.artifactType }}
+  storageAccount: ${{ github.event.inputs.storageAccount }}
 
 jobs:
   CalculatePackages:

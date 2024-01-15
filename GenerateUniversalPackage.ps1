@@ -2,11 +2,12 @@ Write-Host "Calculate Packages"
 
 . (Join-Path $PSScriptRoot "HelperFunctions.ps1")
 
+$storageAccount = $env:storageAccount
 $artifactType = $env:artifactType
 $artifactVersion = $env:artifactVersion
 $package = $env:package
 
-# feedUrl is like https://dev.azure.com/freddydk/apps/_artifacts/feed/universal
+# feedUrl is like https://dev.azure.com/freddydk/apps/_artifacts/feed/bcinsider
 $feedUrl = $env:feedUrl
 if ($feedUrl -match '^(https:\/\/dev\.azure\.com\/[^\/]+\/)([^\/]+)\/_artifacts\/feed\/([^\/]+)$') {
     $organization = $matches[1]
@@ -17,7 +18,7 @@ else {
     throw "Invalid feedUrl '$feedUrl'"
 }
 
-$artifactUrl = Get-BcArtifactUrl -type $artifactType -version $artifactVersion -country $package
+$artifactUrl = Get-BcArtifactUrl -storageAccount $storageAccount -type $artifactType -version $artifactVersion -country $package -accept_insiderEula
 $folders = Download-Artifacts -artifactUrl $artifactUrl -includePlatform:($package -eq 'base')
 
 foreach($folder in $folders) {
