@@ -7,7 +7,6 @@ $feedToken = $env:FEED_TOKEN
 $workflow = "Generate Business Central Artifacts"
 
 gh auth login --with-token
-gh auth status
 $runs = gh run list --repo $repo --workflow $workflow --status in_progress
 if ($runs) {
   throw "There are runs in progress"
