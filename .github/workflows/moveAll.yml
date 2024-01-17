@@ -1,4 +1,4 @@
-name: Move Business Central Artifacts From Storage To Universal Packages
+name: Move Business Central Artifacts
 
 on:
   workflow_dispatch:
