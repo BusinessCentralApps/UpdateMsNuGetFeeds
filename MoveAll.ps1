@@ -3,6 +3,7 @@ Write-Host "Move All"
 . (Join-Path $PSScriptRoot "HelperFunctions.ps1")
 
 $repo = $env:GITHUB_REPOSITORY
+$feedToken = $env:FEED_TOKEN
 $workflow = "Generate Business Central Artifacts"
 
 gh auth login --with-token
@@ -51,7 +52,7 @@ if ($runs) {
             elseif ($_.Group.Count -gt 10) {
                 $runname = "$storageAccount $type $version all"
                 Write-Host $runname
-                gh workflow run --repo $repo $workflow -f feedUrl=$feedUrl -f feedToken=$adoKey -f storageAccount=$storageAccount -f artifactType=$type -f artifactVersion=$version -f run-name=$runname
+                gh workflow run --repo $repo $workflow -f feedUrl=$feedUrl -f feedToken=$feedToken -f storageAccount=$storageAccount -f artifactType=$type -f artifactVersion=$version -f run-name=$runname
                 Start-Sleep -Seconds $_.Group.Count
             }
             else {
@@ -59,7 +60,7 @@ if ($runs) {
                     $country = $_.Split('/')[1]
                     $runname = "$storageAccount $type $version $country"
                     Write-Host $runname
-                    gh workflow run --repo $repo $workflow -f feedUrl=$feedUrl -f feedToken=$adoKey -f storageAccount=$storageAccount -f artifactType=$type -f artifactVersion=$version -f country=$country -f run-name=$runname
+                    gh workflow run --repo $repo $workflow -f feedUrl=$feedUrl -f feedToken=$feedToken -f storageAccount=$storageAccount -f artifactType=$type -f artifactVersion=$version -f country=$country -f run-name=$runname
                     Start-Sleep -Seconds 5
                 }
             }

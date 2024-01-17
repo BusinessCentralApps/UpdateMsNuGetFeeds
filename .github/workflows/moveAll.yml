@@ -17,7 +17,8 @@ jobs:
       - name: Move
         shell: pwsh
         env:
-          GH_TOKEN: ${{ secrets.GHTOKEN}}
+          GH_TOKEN: ${{ secrets.GH_TOKEN}}
+          FEED_TOKEN: ${{ secrets.FEED_TOKEN }}
         run: |
           . (Join-Path $env:GITHUB_WORKSPACE "MoveAll.ps1")
 
