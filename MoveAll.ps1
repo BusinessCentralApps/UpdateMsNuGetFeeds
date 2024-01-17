@@ -7,7 +7,7 @@ $workflow = "Generate Business Central Artifacts"
 
 gh auth login --with-token
 gh auth status
-$runs = gh runs list --repo $repo --workflow $workflow --status in_progress
+$runs = gh run list --repo $repo --workflow $workflow --status in_progress
 if ($runs) {
   throw "There are runs in progress"
 }
