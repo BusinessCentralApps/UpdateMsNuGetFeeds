@@ -13,7 +13,7 @@ if ($runs) {
   throw "There are runs in progress"
 }
 
-'bcartifacts','bcinsider' | ForEach-Object {
+'bcinsider','bcartifacts' | ForEach-Object {
     $storageAccount = $_
     'onprem','sandbox' | Where-Object { $_ -eq 'sandbox' -or $storageAccount -eq 'bcartifacts' } | ForEach-Object {
         $type = $_
