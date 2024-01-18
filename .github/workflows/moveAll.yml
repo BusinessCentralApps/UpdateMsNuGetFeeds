@@ -3,11 +3,7 @@ name: Move Business Central Artifacts
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *'
-
-concurrency:
-  group: ${{ github.workflow }}
-  cancel-in-progress: false
+    - cron: '0 * * * *'
 
 jobs:
   MoveAllArtifacts:

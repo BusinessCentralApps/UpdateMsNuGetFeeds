@@ -8,9 +8,13 @@ $feedToken = $env:FEED_TOKEN
 $workflow = "Generate Business Central Artifacts"
 
 gh auth login --with-token
+$runs = gh run list --repo $repo --workflow $env:GITHUB_WORKFLOW --status in_progress
+if ($runs) {
+  throw "Another run is already in progress"
+}
 $runs = gh run list --repo $repo --workflow $workflow --status in_progress
 if ($runs) {
-  throw "There are runs in progress"
+  throw "Another run is already in progress"
 }
 
 'bcinsider','bcartifacts' | ForEach-Object {
