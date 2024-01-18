@@ -36,7 +36,7 @@ foreach($majorminor in $majorminors) {
         $symbolsStr = ''
     }
     $nuGetServerUrl = "https://dynamicssmb2.pkgs.visualstudio.com/DynamicsBCPublicFeeds/_packaging/$name/nuget/v3/index.json"
-    $artifactVersions | Select-Object -First 2 | ForEach-Object {
+    $artifactVersions | Select-Object -First 3 | ForEach-Object {
         $artifactVersion = "$_"
         $feed, $packageId, $packageVersion = Find-BcNuGetPackage -nuGetServerUrl $nuGetServerUrl -nuGetToken $feedToken -packageName "Microsoft.BaseApplication$symbolsStr.437dbf0e-84ff-417a-965d-ed2bb9650972" -version $artifactVersion -select Exact
         if (!$packageId) {
