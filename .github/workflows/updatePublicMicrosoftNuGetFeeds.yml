@@ -6,7 +6,7 @@ on:
     - cron: '0 * * * *'
 
 jobs:
-  MoveAllArtifacts:
+  UpdatePublicNuGetFeeds:
     runs-on: [ ubuntu-latest ]
     steps:
       - name: Checkout
