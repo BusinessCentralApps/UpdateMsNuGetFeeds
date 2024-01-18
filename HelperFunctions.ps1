@@ -13,3 +13,17 @@ $bcContainerHelperPath = (Get-Item -Path (Join-Path $tempName "*\BcContainerHelp
 $bcContainerHelperConfig.DoNotUseCdnForArtifacts = $true
 
 $ErrorActionPreference = "stop"
+
+function GetNuGetServerUrlAndRepository {
+    Param(
+        [string] $nuGetServerUrl
+    )
+    if ($nugetServerUrl -match '^https:\/\/github\.com\/([^\/]+)\/([^\/]+)$') {
+        $githubRepository = $nuGetServerUrl
+        $nuGetServerUrl = "https://nuget.pkg.github.com/$($Matches[1])/index.json"
+    }
+    else {
+        $githubRepository = ''
+    }
+    return $nuGetServerUrl, $githubRepository
+}
