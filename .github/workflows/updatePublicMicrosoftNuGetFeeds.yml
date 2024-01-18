@@ -1,4 +1,4 @@
-name: Copy All Artifacts to Universal Feed
+name: Update Public Microsoft NuGet Feeds
 
 on:
   workflow_dispatch:
