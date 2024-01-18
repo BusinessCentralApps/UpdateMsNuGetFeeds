@@ -1,4 +1,4 @@
-name: Generate Business Central Artifacts
+name: Generate Universal Packages
 
 # Controls when the workflow will run
 on:
@@ -96,7 +96,7 @@ jobs:
           feedUrl: ${{ github.event.inputs.feedUrl }}
           package: ${{ matrix.package }}
         run: |
-          . (Join-Path $env:GITHUB_WORKSPACE "GenerateUniversalPackage.ps1")
+          . (Join-Path $env:GITHUB_WORKSPACE "GenerateUniversalPackages.ps1")
 
       - name: Generate Universal Package (retry)
         if: steps.firstAttempt.outcome == 'Failure'
@@ -107,4 +107,4 @@ jobs:
           feedUrl: ${{ github.event.inputs.feedUrl }}
           package: ${{ matrix.package }}
         run: |
-          . (Join-Path $env:GITHUB_WORKSPACE "GenerateUniversalPackage.ps1")
+          . (Join-Path $env:GITHUB_WORKSPACE "GenerateUniversalPackages.ps1")

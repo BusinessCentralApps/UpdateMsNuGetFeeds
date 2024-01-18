@@ -5,7 +5,7 @@ Write-Host "Move All"
 $repo = $env:GITHUB_REPOSITORY
 $universalFeed = $env:UNIVERSAL_FEED
 $feedToken = $env:FEED_TOKEN
-$workflow = "Generate Business Central Artifacts"
+$workflow = "Generate Universal Packages"
 
 gh auth login --with-token
 $runs = gh run list --repo $repo --workflow $env:GITHUB_WORKFLOW --status in_progress

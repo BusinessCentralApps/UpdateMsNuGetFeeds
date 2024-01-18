@@ -1,4 +1,4 @@
-name: Generate Microsoft Apps NuGet Packages
+name: Generate MS NuGet Packages
 
 # Controls when the workflow will run
 on:
@@ -63,7 +63,7 @@ jobs:
           country: ${{ matrix.country }}
           symbolsOnly: ${{ (github.event.inputs.symbolsOnly == 'true') && 'true' || vars.SYMBOLSONLY }}
         run: |
-          . (Join-Path $env:GITHUB_WORKSPACE "GenerateMSApps.ps1")
+          . (Join-Path $env:GITHUB_WORKSPACE "GenerateMSNuGetPackages.ps1")
 
       - name: Generate MS Apps (retry)
         if: steps.firstAttempt.outcome == 'Failure'
@@ -79,5 +79,5 @@ jobs:
         run: |
           Add-Content -Path $ENV:GITHUB_STEP_SUMMARY -Value "Failure. Retrying in 60 seconds..."
           Start-Sleep -Seconds 60
-          . (Join-Path $env:GITHUB_WORKSPACE "GenerateMSApps.ps1")
+          . (Join-Path $env:GITHUB_WORKSPACE "GenerateMSNuGetPackages.ps1")
 

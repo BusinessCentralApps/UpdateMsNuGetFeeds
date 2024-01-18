@@ -1,4 +1,4 @@
-name: Move Business Central Artifacts
+name: Copy All Artifacts to Universal Feed
 
 on:
   workflow_dispatch:
@@ -19,5 +19,5 @@ jobs:
           FEED_TOKEN: ${{ secrets.FEED_TOKEN }}
           UNIVERSAL_FEED: ${{ secrets.UNIVERSAL_FEED }}
         run: |
-          . (Join-Path $env:GITHUB_WORKSPACE "MoveAll.ps1")
+          . (Join-Path $env:GITHUB_WORKSPACE "UpdatePublicNuGetFeeds.ps1")
 

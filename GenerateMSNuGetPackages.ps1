@@ -1,4 +1,4 @@
-Write-Host "Generate Microsoft Apps NuGet Packages"
+Write-Host "Generate MS NuGet Packages"
 
 . (Join-Path $PSScriptRoot "HelperFunctions.ps1")
 
