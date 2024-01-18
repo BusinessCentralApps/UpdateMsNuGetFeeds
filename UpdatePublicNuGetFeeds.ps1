@@ -3,7 +3,7 @@ Write-Host "Move All"
 . (Join-Path $PSScriptRoot "HelperFunctions.ps1")
 
 $repo = $env:GITHUB_REPOSITORY
-$feedToken = $env:NUGET_TOKEN
+$feedToken = $env:FEED_TOKEN
 $workflow = "Generate NuGet Packages"
 
 gh auth login --with-token
