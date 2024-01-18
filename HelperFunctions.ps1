@@ -27,3 +27,24 @@ function GetNuGetServerUrlAndRepository {
     }
     return $nuGetServerUrl, $githubRepository
 }
+
+function GetAppFile {
+    Param(
+        [string] $appFile,
+        [switch] $symbolsOnly
+    )
+    Write-Host "'$appFile'"
+    Write-Host $appFile.GetType()
+    if ($symbolsOnly) {
+        $symbolsFile = Join-Path ([System.IO.Path]::GetTempPath()) "$([Guid]::NewGuid().ToString()).app"
+        Write-Host "Creating symbols file $symbolsFile"
+        Create-SymbolsFileFromAppFile -appFile $appFile -symbolsFile $symbolsFile | Out-Null
+        if (-not (Test-Path $symbolsFile)) {
+            throw "Could not create symbols file from $appFile"
+        }
+        return $symbolsFile
+    }
+    else {
+        return $appFile
+    }
+}
