@@ -101,7 +101,7 @@ jobs:
       - name: Generate Universal Package (retry)
         if: steps.firstAttempt.outcome == 'Failure'
         shell: pwsh
-        timeout-minutes: 60
+        timeout-minutes: 30
         env:
           AZURE_DEVOPS_EXT_PAT: ${{ github.event.inputs.feedToken }}
           feedUrl: ${{ github.event.inputs.feedUrl }}
