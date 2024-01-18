@@ -36,14 +36,14 @@ foreach($majorminor in $majorminors) {
         $symbolsStr = ''
     }
     $nuGetServerUrl = "https://dynamicssmb2.pkgs.visualstudio.com/DynamicsBCPublicFeeds/_packaging/$name/nuget/v3/index.json"
-    $artifactVersions | Select-Object -First 3 | ForEach-Object {
+    $artifactVersions | ForEach-Object {
         $artifactVersion = "$_"
         $feed, $packageId, $packageVersion = Find-BcNuGetPackage -nuGetServerUrl $nuGetServerUrl -nuGetToken $feedToken -packageName "Microsoft.BaseApplication$symbolsStr.437dbf0e-84ff-417a-965d-ed2bb9650972" -version $artifactVersion -select Exact
         if (!$packageId) {
             $runname = "$name-$artifactVersion"
             Write-Host -ForegroundColor Yellow "$runname"
             gh workflow run --repo $repo $workflow -f nuGetServerUrl=$nuGetServerUrl -f nuGetToken=$feedToken -f artifactVersion=$artifactVersion -f symbolsOnly=$symbolsOnly -f run-name=$runname
-            Start-Sleep -Seconds 120
+            Start-Sleep -Seconds 60
         }
     }
 }
