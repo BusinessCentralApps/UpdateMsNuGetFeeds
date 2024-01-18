@@ -3,7 +3,6 @@ Write-Host "Move All"
 . (Join-Path $PSScriptRoot "HelperFunctions.ps1")
 
 $repo = $env:GITHUB_REPOSITORY
-$universalFeed = $env:UNIVERSAL_FEED
 $feedToken = $env:FEED_TOKEN
 $workflow = "Generate Universal Packages"
 
@@ -21,8 +20,8 @@ if ($runs) {
     $storageAccount = $_
     'onprem','sandbox' | Where-Object { $_ -eq 'sandbox' -or $storageAccount -eq 'bcartifacts' } | ForEach-Object {
         $type = $_
-        $feedUrl = "https://dev.azure.com/$universalFeed/_artifacts/feed/$storageAccount"
-        $feedApiUrl = "https://feeds.dev.azure.com/$universalFeed/_apis/packaging/Feeds/$storageAccount"
+        $feedUrl = "https://dev.azure.com/dynamicssmb2/DynamicsBCPublicFeeds/_artifacts/feed/$storageAccount"
+        $feedApiUrl = "https://feeds.dev.azure.com/dynamicssmb2/DynamicsBCPublicFeeds/_apis/packaging/Feeds/$storageAccount"
         $artifacts = Get-BCArtifactUrl -storageAccount $storageAccount -type $type -select all -accept_insiderEula
         $artifactVersions = @($artifacts | ForEach-Object {
             $version = $_.Split('/')[4]
