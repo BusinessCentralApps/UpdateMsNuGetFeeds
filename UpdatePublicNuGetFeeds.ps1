@@ -28,7 +28,7 @@ foreach($majorminor in $majorminors) {
 'true' | ForEach-Object {
     $symbolsOnly = $_
     if ($symbolsOnly -eq 'true') {
-        $name = "MSSymbols6"
+        $name = "MSSymbols"
         $symbolsStr = '.symbols'
     }
     else {
