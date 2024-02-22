@@ -2,8 +2,6 @@ name: Update Public Microsoft Universal Feeds
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 * * * *'
 
 jobs:
   UpdatePublicUniversalFeeds:
