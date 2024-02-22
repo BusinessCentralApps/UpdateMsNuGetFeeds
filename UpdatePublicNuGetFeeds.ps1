@@ -28,7 +28,7 @@ foreach($majorminor in $majorminors) {
 1..4 | ForEach-Object {
     $symbolsOnly = "$($_ -eq 1 -or $_ -eq 3)".ToLowerInvariant()
     $dependencyVersionTemplate = ''
-    if ($_ -eq 3 -or $_ -eq 4) {
+    if ($_ -eq 1 -or $_ -eq 2) {
         $dependencyVersionTemplate = '[{major}.{minor}.{build}.{revision},{major}.{minor+1}.0.0)'
     }
     if ($symbolsOnly -eq 'true') {
@@ -50,7 +50,7 @@ foreach($majorminor in $majorminors) {
             $runname = "$name-$artifactVersion"
             Write-Host -ForegroundColor Yellow "$runname"
             gh workflow run --repo $repo $workflow -f nuGetServerUrl=$nuGetServerUrl -f nuGetToken=$feedToken -f artifactVersion=$artifactVersion -f symbolsOnly=$symbolsOnly -f dependencyVersionTemplate=$dependencyVersionTemplate -f run-name=$runname
-            Start-Sleep -Seconds 180
+            Start-Sleep -Seconds 120
         }
     }
 }
