@@ -20,6 +20,10 @@ on:
         description: Generate Symbols Only NuGet packages
         type: boolean
         required: false
+      dependencyVersionTemplate:
+        description: Template for dependency version (leave empty to use the default template)
+        required: false
+        default: ''
       run-name:
         description: Name of the run (leave empty to use the default name)
         required: false
@@ -62,6 +66,7 @@ jobs:
           artifactVersion: ${{ github.event.inputs.artifactVersion }}
           country: ${{ matrix.country }}
           symbolsOnly: ${{ (github.event.inputs.symbolsOnly == 'true') && 'true' || vars.SYMBOLSONLY }}
+          dependencyVersionTemplate: ${{ github.event.inputs.dependencyVersionTemplate != '' && github.event.inputs.dependencyVersionTemplate || vars.DEPENDENCYVERSIONTEMPLATE }}
         run: |
           . (Join-Path $env:GITHUB_WORKSPACE "GenerateNuGetPackages.ps1")
 
@@ -76,8 +81,8 @@ jobs:
           artifactVersion: ${{ github.event.inputs.artifactVersion }}
           country: ${{ matrix.country }}
           symbolsOnly: ${{ (github.event.inputs.symbolsOnly == 'true') && 'true' || vars.SYMBOLSONLY }}
+          dependencyVersionTemplate: ${{ github.event.inputs.dependencyVersionTemplate != '' && github.event.inputs.dependencyVersionTemplate || vars.DEPENDENCYVERSIONTEMPLATE }}
         run: |
           Add-Content -Path $ENV:GITHUB_STEP_SUMMARY -Value "Failure. Retrying in 60 seconds..."
           Start-Sleep -Seconds 60
           . (Join-Path $env:GITHUB_WORKSPACE "GenerateNuGetPackages.ps1")
-

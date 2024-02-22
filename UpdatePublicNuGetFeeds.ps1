@@ -25,8 +25,12 @@ foreach($majorminor in $majorminors) {
     $artifactVersions += @("$lastVersion")
 }
 
-'true' | ForEach-Object {
-    $symbolsOnly = $_
+3..4 | ForEach-Object {
+    $symbolsOnly = $_ -eq 1 -or $_ -eq 3
+    $dependencyVersionTemplate = ''
+    if ($_ -eq 3 -or $_ -eq 4) {
+        $dependencyVersionTemplate = '[{major}.{minor}.{build}.{revision},{major}.{minor+1}.0.0)'
+    }
     if ($symbolsOnly -eq 'true') {
         $name = "MSSymbols"
         $symbolsStr = '.symbols'
@@ -34,6 +38,9 @@ foreach($majorminor in $majorminors) {
     else {
         $name = "MSApps"
         $symbolsStr = ''
+    }
+    if ($dependencyVersionTemplate) {
+        $name += "2"
     }
     $nuGetServerUrl = "https://dynamicssmb2.pkgs.visualstudio.com/DynamicsBCPublicFeeds/_packaging/$name/nuget/v3/index.json"
     $artifactVersions | ForEach-Object {
