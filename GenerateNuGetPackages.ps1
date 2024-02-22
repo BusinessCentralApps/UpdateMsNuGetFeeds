@@ -64,6 +64,7 @@ else {
                     elseif ($appName -eq 'System.app') {
                         $packageId = "Microsoft.Platform$symbolsStr"
                     }
+                    Write-Host "New-BcNuGetPackage -appfiles '$appFileName' -packageId '$packageId' -dependencyIdTemplate ""{publisher}.{name}$symbolsStr.{id}"" -dependencyVersionTemplate '$dependencyVersionTemplate' -applicationDependencyId ""Microsoft.Application$symbolsStr"" -applicationDependency '$dependencyVersionTemplate' -platformDependencyId ""Microsoft.Platform$symbolsStr"" -platformDependency '$dependencyVersionTemplate' -destinationFolder '$destinationFolder'"
                     $package = New-BcNuGetPackage -appfiles $appFileName -packageId $packageId -dependencyIdTemplate "{publisher}.{name}$symbolsStr.{id}" -dependencyVersionTemplate $dependencyVersionTemplate -applicationDependencyId "Microsoft.Application$symbolsStr" -applicationDependency $dependencyVersionTemplate -platformDependencyId "Microsoft.Platform$symbolsStr" -platformDependency $dependencyVersionTemplate -destinationFolder $destinationFolder
                 }
                 else {
@@ -75,6 +76,7 @@ else {
                         $packageId = ""
                     }
                     if ($packageId) {
+                        Write-Host "New-BcNuGetPackage -appfiles '$appFileName' -packageId '$packageId' -dependencyIdTemplate ""{publisher}.{name}.$country$symbolsStr.{id}"" -dependencyVersionTemplate '$dependencyVersionTemplate' -applicationDependencyId ""Microsoft.Application.$country$symbolsStr"" -applicationDependency '$dependencyVersionTemplate' -platformDependencyId ""Microsoft.Platform$symbolsStr"" -platformDependency '$dependencyVersionTemplate' -destinationFolder '$destinationFolder'"
                         $package = New-BcNuGetPackage -appfiles $appFileName -packageId $packageId -dependencyIdTemplate "{publisher}.{name}.$country$symbolsStr.{id}" -dependencyVersionTemplate $dependencyVersionTemplate -applicationDependencyId "Microsoft.Application.$country$symbolsStr" -applicationDependency $dependencyVersionTemplate -platformDependencyId "Microsoft.Platform$symbolsStr" -platformDependency $dependencyVersionTemplate -destinationFolder $destinationFolder
                     }
                 }
