@@ -2,6 +2,8 @@ name: Update Public Microsoft NuGet Feeds
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 * * * *'
 
 jobs:
   UpdatePublicNuGetFeeds:

@@ -21,8 +21,9 @@ $minimumVersion = [System.Version]"17.0.0.0"
 $artifactVersions = @()
 $majorminors = $artifacts | ForEach-Object { [System.Version]$_.Split('/')[4] } | Where-Object { $_ -ge $minimumVersion } | Group-Object { "$($_.Major).$($_.Minor)" }
 foreach($majorminor in $majorminors) {
-    $lastVersion = $majorminor.Group | Select-Object -Last 1
-    $artifactVersions += @("$lastVersion")
+#    $lastVersion = $majorminor.Group | Select-Object -Last 1
+    $addVersions = $majorminor.Group | Select-Object -Last 10 | ForEach-Object { "$_" }
+    $artifactVersions += @($addVersions)
 }
 
 1..4 | ForEach-Object {
