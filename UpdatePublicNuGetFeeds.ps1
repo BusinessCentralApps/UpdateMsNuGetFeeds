@@ -17,21 +17,17 @@ if ($runs) {
 }
 
 $artifacts = get-bcartifacturl -type sandbox -country w1 -select all
-$minimumVersion = [System.Version]"17.0.0.0"
+$minimumVersion = [System.Version]"24.4.0.0"
 $artifactVersions = @()
 $majorminors = $artifacts | ForEach-Object { [System.Version]$_.Split('/')[4] } | Where-Object { $_ -ge $minimumVersion } | Group-Object { "$($_.Major).$($_.Minor)" }
 foreach($majorminor in $majorminors) {
-#    $lastVersion = $majorminor.Group | Select-Object -Last 1
-    $addVersions = $majorminor.Group | Select-Object -Last 10 | ForEach-Object { "$_" }
+    $addVersions = $majorminor.Group | Select-Object -Last 1 | ForEach-Object { "$_" }
     $artifactVersions += @($addVersions)
 }
 
-1..4 | ForEach-Object {
-    $symbolsOnly = "$($_ -eq 1 -or $_ -eq 3)".ToLowerInvariant()
-    $dependencyVersionTemplate = ''
-    if ($_ -eq 1 -or $_ -eq 2) {
-        $dependencyVersionTemplate = '[{major}.{minor}.{build}.{revision},{major}.{minor+1}.0.0)'
-    }
+1..2 | ForEach-Object {
+    $dependencyVersionTemplate = '[{major}.{minor}.{build}.{revision},{major}.{minor+1}.0.0)'
+    $symbolsOnly = "$($_ -eq 1)".ToLowerInvariant()
     if ($symbolsOnly -eq 'true') {
         $name = "MSSymbols"
         $symbolsStr = '.symbols'
@@ -40,10 +36,8 @@ foreach($majorminor in $majorminors) {
         $name = "MSApps"
         $symbolsStr = ''
     }
-    if ($dependencyVersionTemplate) {
-        $name += "2"
-    }
     $nuGetServerUrl = "https://dynamicssmb2.pkgs.visualstudio.com/DynamicsBCPublicFeeds/_packaging/$name/nuget/v3/index.json"
+    $nuGetServerUrl = "https://pkgs.dev.azure.com/freddydk/apps/_packaging/$name/nuget/v3/index.json"
     $artifactVersions | ForEach-Object {
         $artifactVersion = "$_"
         $feed, $packageId, $packageVersion = Find-BcNuGetPackage -nuGetServerUrl $nuGetServerUrl -nuGetToken $feedToken -packageName "Microsoft.BaseApplication$symbolsStr.437dbf0e-84ff-417a-965d-ed2bb9650972" -version $artifactVersion -select Exact
@@ -51,7 +45,7 @@ foreach($majorminor in $majorminors) {
             $runname = "$name-$artifactVersion"
             Write-Host -ForegroundColor Yellow "$runname"
             gh workflow run --repo $repo $workflow -f nuGetServerUrl=$nuGetServerUrl -f nuGetToken=$feedToken -f artifactVersion=$artifactVersion -f symbolsOnly=$symbolsOnly -f dependencyVersionTemplate=$dependencyVersionTemplate -f run-name=$runname
-            Start-Sleep -Seconds 120
+            Start-Sleep -Seconds 300
         }
     }
 }
