@@ -25,7 +25,7 @@ foreach($majorminor in $majorminors) {
     $artifactVersions += @($addVersions)
 }
 
-1..2 | ForEach-Object {
+2..1 | ForEach-Object {
     $dependencyVersionTemplate = '[{major}.{minor}.{build}.{revision},{major}.{minor+1}.0.0)'
     $symbolsOnly = "$($_ -eq 1)".ToLowerInvariant()
     if ($symbolsOnly -eq 'true') {
