@@ -12,7 +12,7 @@ $artifactVersion = $env:artifactVersion
 $dependencyVersionTemplate = $env:dependencyVersionTemplate
 $symbolsOnly = ($env:symbolsOnly -eq 'true')
 if ($symbolsOnly) {
-    $symbolsStr = '.symbols'
+    $symbolsStr = ''
     $dependencyIdTemplate = ''
 }
 else {
