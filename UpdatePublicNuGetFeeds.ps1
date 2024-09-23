@@ -7,17 +7,17 @@ $feedToken = $env:FEED_TOKEN
 $workflow = "Generate NuGet Packages"
 
 gh auth login --with-token
-$runs = @(gh run list --repo $repo --workflow $env:GITHUB_WORKFLOW --status in_progress)
-if ($runs.count -gt 1) {
-  throw "Another instance is already in progress"
-}
-$runs = gh run list --repo $repo --workflow $workflow --status in_progress
-if ($runs) {
-  throw "Another run is already in progress"
-}
+#$runs = @(gh run list --repo $repo --workflow $env:GITHUB_WORKFLOW --status in_progress)
+#if ($runs.count -gt 1) {
+#  throw "Another instance is already in progress"
+#}
+#$runs = gh run list --repo $repo --workflow $workflow --status in_progress
+#if ($runs) {
+#  throw "Another run is already in progress"
+#}
 
 $artifacts = get-bcartifacturl -type sandbox -country w1 -select all
-$minimumVersion = [System.Version]"24.4.0.0"
+$minimumVersion = [System.Version]"17.0.0.0"
 $artifactVersions = @()
 $majorminors = $artifacts | ForEach-Object { [System.Version]$_.Split('/')[4] } | Where-Object { $_ -ge $minimumVersion } | Group-Object { "$($_.Major).$($_.Minor)" }
 foreach($majorminor in $majorminors) {
