@@ -30,14 +30,14 @@ foreach($majorminor in $majorminors) {
     $symbolsOnly = "$($_ -eq 1)".ToLowerInvariant()
     if ($symbolsOnly -eq 'true') {
         $name = "MSSymbols"
-        $symbolsStr = '.symbols'
+        $symbolsStr = ''
     }
     else {
         $name = "MSApps"
         $symbolsStr = ''
     }
     $nuGetServerUrl = "https://dynamicssmb2.pkgs.visualstudio.com/DynamicsBCPublicFeeds/_packaging/$name/nuget/v3/index.json"
-    $nuGetServerUrl = "https://pkgs.dev.azure.com/freddydk/apps/_packaging/$name/nuget/v3/index.json"
+#    $nuGetServerUrl = "https://pkgs.dev.azure.com/freddydk/apps/_packaging/$name/nuget/v3/index.json"
     $artifactVersions | ForEach-Object {
         $artifactVersion = "$_"
         $feed, $packageId, $packageVersion = Find-BcNuGetPackage -nuGetServerUrl $nuGetServerUrl -nuGetToken $feedToken -packageName "Microsoft.BaseApplication$symbolsStr.437dbf0e-84ff-417a-965d-ed2bb9650972" -version $artifactVersion -select Exact
@@ -45,7 +45,7 @@ foreach($majorminor in $majorminors) {
             $runname = "$name-$artifactVersion"
             Write-Host -ForegroundColor Yellow "$runname"
             gh workflow run --repo $repo $workflow -f nuGetServerUrl=$nuGetServerUrl -f nuGetToken=$feedToken -f artifactVersion=$artifactVersion -f symbolsOnly=$symbolsOnly -f dependencyVersionTemplate=$dependencyVersionTemplate -f run-name=$runname
-            Start-Sleep -Seconds 300
+            Start-Sleep -Seconds 450
         }
     }
 }
