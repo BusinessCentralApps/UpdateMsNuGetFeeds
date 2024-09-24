@@ -45,7 +45,7 @@ foreach($majorminor in $majorminors) {
             $runname = "$name-$artifactVersion"
             Write-Host -ForegroundColor Yellow "$runname"
             gh workflow run --repo $repo $workflow -f nuGetServerUrl=$nuGetServerUrl -f nuGetToken=$feedToken -f artifactVersion=$artifactVersion -f symbolsOnly=$symbolsOnly -f dependencyVersionTemplate=$dependencyVersionTemplate -f run-name=$runname
-            Start-Sleep -Seconds 450
+            Start-Sleep -Seconds 300
         }
     }
 }
