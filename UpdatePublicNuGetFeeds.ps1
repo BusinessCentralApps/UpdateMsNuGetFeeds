@@ -25,12 +25,12 @@ foreach($majorminor in $majorminors) {
     $artifactVersions += @($addVersions)
 }
 
-2..1 | ForEach-Object {
+1..2 | ForEach-Object {
     $dependencyVersionTemplate = '[{major}.{minor}.{build}.{revision},{major}.{minor+1}.0.0)'
     $symbolsOnly = "$($_ -eq 1)".ToLowerInvariant()
     if ($symbolsOnly -eq 'true') {
         $name = "MSSymbols"
-        $symbolsStr = ''
+        $symbolsStr = '.symbols'
     }
     else {
         $name = "MSApps"
