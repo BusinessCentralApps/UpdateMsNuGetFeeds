@@ -13,11 +13,9 @@ $dependencyVersionTemplate = $env:dependencyVersionTemplate
 $symbolsOnly = ($env:symbolsOnly -eq 'true')
 if ($symbolsOnly) {
     $symbolsStr = '.symbols'
-    $dependencyIdTemplate = ''
 }
 else {
     $symbolsStr = ''
-    $dependencyIdTemplate = '{publisher}.{name}.{id}'
 }
 
 function AddToSummary {
@@ -66,8 +64,8 @@ else {
                     elseif ($appName -eq 'System.app') {
                         $packageId = "Microsoft.Platform$symbolsStr"
                     }
-                    Write-Host "New-BcNuGetPackage -appfiles '$appFileName' -packageId '$packageId' -dependencyIdTemplate '$dependencyIdTemplate' -dependencyVersionTemplate '$dependencyVersionTemplate' -applicationDependencyId ""Microsoft.Application$symbolsStr"" -applicationDependency '$dependencyVersionTemplate' -platformDependencyId ""Microsoft.Platform$symbolsStr"" -platformDependency '$dependencyVersionTemplate' -destinationFolder '$destinationFolder'"
-                    $package = New-BcNuGetPackage -appfiles $appFileName -packageId $packageId -dependencyIdTemplate $dependencyIdTemplate -dependencyVersionTemplate $dependencyVersionTemplate -applicationDependencyId "Microsoft.Application$symbolsStr" -applicationDependency $dependencyVersionTemplate -platformDependencyId "Microsoft.Platform$symbolsStr" -platformDependency $dependencyVersionTemplate -destinationFolder $destinationFolder
+                    Write-Host "New-BcNuGetPackage -appfiles '$appFileName' -packageId '$packageId' -dependencyIdTemplate ""{publisher}.{name}$($symbolsStr).{id}"" -dependencyVersionTemplate '$dependencyVersionTemplate' -applicationDependencyId ""Microsoft.Application$symbolsStr"" -applicationDependency '$dependencyVersionTemplate' -platformDependencyId ""Microsoft.Platform$symbolsStr"" -platformDependency '$dependencyVersionTemplate' -destinationFolder '$destinationFolder'"
+                    $package = New-BcNuGetPackage -appfiles $appFileName -packageId $packageId -dependencyIdTemplate "{publisher}.{name}$($symbolsStr).{id}" -dependencyVersionTemplate $dependencyVersionTemplate -applicationDependencyId "Microsoft.Application$symbolsStr" -applicationDependency $dependencyVersionTemplate -platformDependencyId "Microsoft.Platform$symbolsStr" -platformDependency $dependencyVersionTemplate -destinationFolder $destinationFolder
                 }
                 else {
                     $packageId = "{publisher}.{name}.$($country)$symbolsStr.{id}"
@@ -78,8 +76,8 @@ else {
                         $packageId = ""
                     }
                     if ($packageId) {
-                        Write-Host "New-BcNuGetPackage -appfiles '$appFileName' -packageId '$packageId' -dependencyIdTemplate '$dependencyIdTemplate' -dependencyVersionTemplate '$dependencyVersionTemplate' -applicationDependencyId ""Microsoft.Application.$country$symbolsStr"" -applicationDependency '$dependencyVersionTemplate' -platformDependencyId ""Microsoft.Platform$symbolsStr"" -platformDependency '$dependencyVersionTemplate' -destinationFolder '$destinationFolder'"
-                        $package = New-BcNuGetPackage -appfiles $appFileName -packageId $packageId -dependencyIdTemplate $dependencyIdTemplate -dependencyVersionTemplate $dependencyVersionTemplate -applicationDependencyId "Microsoft.Application.$country$symbolsStr" -applicationDependency $dependencyVersionTemplate -platformDependencyId "Microsoft.Platform$symbolsStr" -platformDependency $dependencyVersionTemplate -destinationFolder $destinationFolder
+                        Write-Host "New-BcNuGetPackage -appfiles '$appFileName' -packageId '$packageId' -dependencyIdTemplate ""{publisher}.{name}.$($country)$($symbolsStr).{id}"" -dependencyVersionTemplate '$dependencyVersionTemplate' -applicationDependencyId ""Microsoft.Application.$country$symbolsStr"" -applicationDependency '$dependencyVersionTemplate' -platformDependencyId ""Microsoft.Platform$symbolsStr"" -platformDependency '$dependencyVersionTemplate' -destinationFolder '$destinationFolder'"
+                        $package = New-BcNuGetPackage -appfiles $appFileName -packageId $packageId -dependencyIdTemplate "{publisher}.{name}.$($country)$($symbolsStr).{id}" -dependencyVersionTemplate $dependencyVersionTemplate -applicationDependencyId "Microsoft.Application.$country$symbolsStr" -applicationDependency $dependencyVersionTemplate -platformDependencyId "Microsoft.Platform$symbolsStr" -platformDependency $dependencyVersionTemplate -destinationFolder $destinationFolder
                     }
                 }
                 if ($package) {

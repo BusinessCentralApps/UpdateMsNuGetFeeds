@@ -19,7 +19,7 @@ if ($runs) {
 $artifacts = get-bcartifacturl -type sandbox -country w1 -select all
 $minimumVersion = [System.Version]"17.0.0.0"
 $artifactVersions = @()
-$majorminors = $artifacts | ForEach-Object { [System.Version]$_.Split('/')[4] } | Where-Object { $_ -ge $minimumVersion } | Group-Object { "$($_.Major).$($_.Minor)" }
+$majorminors = $artifacts | ForEach-Object { [System.Version]$_.Split('/')[4] } | Where-Object { $_ -ge $minimumVersion } | Group-Object { "$($_.Major).$($_.Minor)" } | Select-Object -First 2
 foreach($majorminor in $majorminors) {
     $addVersions = $majorminor.Group | Select-Object -Last 1 | ForEach-Object { "$_" }
     $artifactVersions += @($addVersions)
@@ -29,7 +29,7 @@ foreach($majorminor in $majorminors) {
     $dependencyVersionTemplate = '[{major}.{minor}.{build}.{revision},{major}.{minor+1}.0.0)'
     $symbolsOnly = "$($_ -eq 1)".ToLowerInvariant()
     if ($symbolsOnly -eq 'true') {
-        $name = "MSSymbols"
+        $name = "MSSymbols3"
         $symbolsStr = '.symbols'
     }
     else {
@@ -37,7 +37,6 @@ foreach($majorminor in $majorminors) {
         $symbolsStr = ''
     }
     $nuGetServerUrl = "https://dynamicssmb2.pkgs.visualstudio.com/DynamicsBCPublicFeeds/_packaging/$name/nuget/v3/index.json"
-#    $nuGetServerUrl = "https://pkgs.dev.azure.com/freddydk/apps/_packaging/$name/nuget/v3/index.json"
     $artifactVersions | ForEach-Object {
         $artifactVersion = "$_"
         $feed, $packageId, $packageVersion = Find-BcNuGetPackage -nuGetServerUrl $nuGetServerUrl -nuGetToken $feedToken -packageName "Microsoft.BaseApplication$symbolsStr.437dbf0e-84ff-417a-965d-ed2bb9650972" -version $artifactVersion -select Exact
