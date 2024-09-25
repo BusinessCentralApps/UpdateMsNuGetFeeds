@@ -19,7 +19,7 @@ if ($runs) {
 $artifacts = get-bcartifacturl -type sandbox -country w1 -select all
 $minimumVersion = [System.Version]"17.0.0.0"
 $artifactVersions = @()
-$majorminors = $artifacts | ForEach-Object { [System.Version]$_.Split('/')[4] } | Where-Object { $_ -ge $minimumVersion } | Group-Object { "$($_.Major).$($_.Minor)" } | Select-Object -First 2
+$majorminors = $artifacts | ForEach-Object { [System.Version]$_.Split('/')[4] } | Where-Object { $_ -ge $minimumVersion } | Group-Object { "$($_.Major).$($_.Minor)" }
 foreach($majorminor in $majorminors) {
     $addVersions = $majorminor.Group | Select-Object -Last 1 | ForEach-Object { "$_" }
     $artifactVersions += @($addVersions)
@@ -29,7 +29,7 @@ foreach($majorminor in $majorminors) {
     $dependencyVersionTemplate = '[{major}.{minor}.{build}.{revision},{major}.{minor+1}.0.0)'
     $symbolsOnly = "$($_ -eq 1)".ToLowerInvariant()
     if ($symbolsOnly -eq 'true') {
-        $name = "MSSymbols3"
+        $name = "MSSymbols"
         $symbolsStr = '.symbols'
     }
     else {
