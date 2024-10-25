@@ -17,5 +17,5 @@ $onpremVersions = @(Get-BcArtifactUrl -type 'onprem' -country 'w1' -select all |
 $onpremVersions | ForEach-Object {
     $versionMatrix.matrix.include += @{"type" = "onprem"; "version" = "$_" }
 }
-ConvertTo-Json $versionMatrix | Out-Host
-Add-Content -Path $ENV:GITHUB_ENV -Value "versionMatrixJson=$(ConvertTo-Json -InputObject $versionMatrix)" -Encoding UTF8
+ConvertTo-Json $versionMatrix -Depth 99 | Out-Host
+Add-Content -Encoding UTF8 -Path $env:GITHUB_OUTPUT -Value "versionMatrixJson=$(ConvertTo-Json -InputObject $versionMatrix -Depth 99 -Compress)"
