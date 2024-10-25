@@ -39,8 +39,8 @@ $artifacts | ForEach-Object {
     if ($existingTags -notcontains $tag) {
         Write-Host $artifactUrl
         if ($country -eq 'core' -or $country -eq 'platform') {
-            $paths = Download-Artifacts -artifactUrl $artifactUrl
-            Set-Location -Path (Join-Path $paths[0] '..' -Resolve)
+            $path = Download-Artifacts -artifactUrl $artifactUrl
+            Set-Location -Path (Join-Path $path '..' -Resolve)
             & $orasExePath push "$registryFQ/$($type):$tag" .\$country\:application/x-tar
         }
         else {
