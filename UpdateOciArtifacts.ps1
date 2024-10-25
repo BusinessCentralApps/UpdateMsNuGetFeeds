@@ -25,15 +25,14 @@ Write-Host "Type: $type"
 Write-Host "Country: $country"
 Write-Host "StartArtifactVersion: $startArtifactVersion"
 
-try {
-    $existingTags = & $orasExePath repo tags "$registryFQ/$type"
+$existingTags = @()
+$existingTags = & $orasExePath repo tags "$registryFQ/$type"
+if ("$?" -eq "0") {
+    Write-Host "Existiung Tags:"
     $existingTags | Out-Host
 }
-catch {
-    $existingTags = @()
-}
 
-$artifacts = get-bcartifacturl -type $type -country $country -select all | Where-Object { [System.Version]$_.Split('/')[4] -ge $startArtifactVersion }
+$artifacts = Get-BcArtifactUrl -type $type -country $country -select all | Where-Object { [System.Version]$_.Split('/')[4] -ge $startArtifactVersion }
 $artifacts | ForEach-Object {
     $artifactUrl = $_
     $tag = "$($artifactUrl.Split('/')[4])-$country"
