@@ -11,7 +11,7 @@ on:
 
 jobs:
   GenerateSandboxOciArtifacts:
-    runs-on: [ ubuntu-latest ]
+    runs-on: [ windows-latest ]
     strategy:
       matrix:
         country: [ "w1","it","ua","tw","tr","th","sk","si","se","rs","ro","pl","pt","ph","pe","nz","no","nl","mx","lv","lt","kr","jp","us","is","cz","ie","hu","hr","hk","gr","gb","fr","fi","es","ee","de","core","dk","co","ch","ca","br","bg","be","base","au","at","vn","in" ]
@@ -27,11 +27,12 @@ jobs:
           type: sandbox
           country: ${{ matrix.country }}
           startArtifactVersion: ${{ github.event.inputs.startArtifactVersion }}
+          registryPassword: ${{ secrets.REGISTRYPASSWORD}}
         run: |
           . (Join-Path $env:GITHUB_WORKSPACE "UpdateOciArtifacts.ps1")
 
   GenerateOnpremOciArtifacts:
-    runs-on: [ ubuntu-latest ]
+    runs-on: [ windows-latest ]
     strategy:
       matrix:
         country: [ "w1","se","nz","no","nl","na","it","is","gb","at","fi","au","be","ch","fr","de","dk","es","cz","ca","mx","itch","frch","frca","frbe","dech","nlbe","us","in" ]
@@ -47,5 +48,6 @@ jobs:
           type: onprem
           country: ${{ matrix.country }}
           startArtifactVersion: ${{ github.event.inputs.startArtifactVersion }}
+          registryPassword: ${{ secrets.REGISTRYPASSWORD}}
         run: |
           . (Join-Path $env:GITHUB_WORKSPACE "UpdateOciArtifacts.ps1")
