@@ -9,6 +9,10 @@ else {
     $startArtifactVersion = [System.Version]"0.0.0.0"
 }
 
+Write-Host "Type: $type"
+Write-Host "Country: $country"
+Write-Host "StartArtifactVersion: $startArtifactVersion"
+
 $artifacts = get-bcartifacturl -type $type -country $country -select all | Where-Object { [System.Version]$_.Split('/')[4] -ge $startArtifactVersion }
 $artifacts | ForEach-Object {
     Write-Host $_
