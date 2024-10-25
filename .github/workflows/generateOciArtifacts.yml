@@ -1,0 +1,50 @@
+name: Generate NuGet Packages
+
+# Controls when the workflow will run
+on:
+  workflow_dispatch:
+    startArtifactVersion:
+        description: Starting with Business Central Version
+        required: false
+        default: ''
+
+jobs:
+  GenerateSandboxOciArtifacts:
+    runs-on: [ ubuntu-latest ]
+    strategy:
+      matrix:
+        country: [ "w1","it","ua","tw","tr","th","sk","si","se","rs","ro","pl","pt","ph","pe","nz","no","nl","mx","lv","lt","kr","jp","us","is","cz","ie","hu","hr","hk","gr","gb","fr","fi","es","ee","de","core","dk","co","ch","ca","br","bg","be","base","au","at","vn","in" ]
+      fail-fast: false
+    name: ${{ matrix.country }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: UpdateOciArtifacts
+        shell: pwsh
+        env:
+          type: sandbox
+          country: ${{ matrix.country }}
+          startArtifactVersion: ${{ github.event.inputs.startArtifactVersion }}
+        run: |
+          . (Join-Path $env:GITHUB_WORKSPACE "UpdateOciArtifacts.ps1")
+
+  GenerateOnpremOciArtifacts:
+    runs-on: [ ubuntu-latest ]
+    strategy:
+      matrix:
+        country: [ "w1","se","nz","no","nl","na","it","is","gb","at","fi","au","be","ch","fr","de","dk","es","cz","ca","mx","itch","frch","frca","frbe","dech","nlbe","us","in" ]
+      fail-fast: false
+    name: ${{ matrix.country }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: UpdateOciArtifacts
+        shell: pwsh
+        env:
+          type: onprem
+          country: ${{ matrix.country }}
+          startArtifactVersion: ${{ github.event.inputs.startArtifactVersion }}
+        run: |
+          . (Join-Path $env:GITHUB_WORKSPACE "UpdateOciArtifacts.ps1")

@@ -1,5 +1,3 @@
-Write-Host "Move All"
-
 . (Join-Path $PSScriptRoot "HelperFunctions.ps1")
 
 $repo = $env:GITHUB_REPOSITORY
