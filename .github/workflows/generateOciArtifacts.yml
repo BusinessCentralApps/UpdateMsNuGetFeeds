@@ -10,80 +10,35 @@ on:
         default: ''
 
 jobs:
-  GenerateSandboxPlatFormOciArtifacts:
+  GetVersions:
     runs-on: [ windows-latest ]
-    name: Sandbox-Platform
+    outputs:
+      versionMatrixJson: ${{ steps.GetVersions.outputs.versionMatrixJson }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: UpdateOciArtifacts
+      - name: GetVersions
         shell: pwsh
         env:
-          type: sandbox
-          country: platform
           startArtifactVersion: ${{ github.event.inputs.startArtifactVersion }}
-          registryPassword: ${{ secrets.REGISTRYPASSWORD}}
         run: |
-          . (Join-Path $env:GITHUB_WORKSPACE "UpdateOciArtifacts.ps1")
+          . (Join-Path $env:GITHUB_WORKSPACE "GetVersions.ps1")
 
-  GenerateSandboxOciArtifacts:
-    needs: GenerateSandboxPlatFormOciArtifacts
+  GenerateOciArtifacts:
+    needs: GetVersions
     runs-on: [ windows-latest ]
-    strategy:
-      matrix:
-        country: [ "w1" ]
-      fail-fast: false
-    name: Sandbox-${{ matrix.country }}
+    strategy: ${{ fromJson(needs.GetVersions.outputs.versionMatrixJson) }}
+    name: ${{ matrix.type }}-${{ matrix.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: UpdateOciArtifacts
+      - name: GenerateOciArtifacts
         shell: pwsh
         env:
-          type: sandbox
-          country: ${{ matrix.country }}
-          startArtifactVersion: ${{ github.event.inputs.startArtifactVersion }}
+          type: ${{ matrix.type }}
+          version: ${{ matrix.version }}
           registryPassword: ${{ secrets.REGISTRYPASSWORD}}
         run: |
-          . (Join-Path $env:GITHUB_WORKSPACE "UpdateOciArtifacts.ps1")
-
-  GenerateOnpremPlatFormOciArtifacts:
-    runs-on: [ windows-latest ]
-    name: Onprem-Platform
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: UpdateOciArtifacts
-        shell: pwsh
-        env:
-          type: onprem
-          country: platform
-          startArtifactVersion: ${{ github.event.inputs.startArtifactVersion }}
-          registryPassword: ${{ secrets.REGISTRYPASSWORD}}
-        run: |
-          . (Join-Path $env:GITHUB_WORKSPACE "UpdateOciArtifacts.ps1")
-
-  GenerateOnpremOciArtifacts:
-    needs: GenerateOnpremPlatFormOciArtifacts
-    runs-on: [ windows-latest ]
-    strategy:
-      matrix:
-        country: [ "w1" ]
-      fail-fast: false
-    name: Onprem-${{ matrix.country }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: UpdateOciArtifacts
-        shell: pwsh
-        env:
-          type: onprem
-          country: ${{ matrix.country }}
-          startArtifactVersion: ${{ github.event.inputs.startArtifactVersion }}
-          registryPassword: ${{ secrets.REGISTRYPASSWORD}}
-        run: |
-          . (Join-Path $env:GITHUB_WORKSPACE "UpdateOciArtifacts.ps1")
+          . (Join-Path $env:GITHUB_WORKSPACE "GenerateOciArtifacts.ps1")

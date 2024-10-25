@@ -1,13 +1,7 @@
 . (Join-Path $PSScriptRoot "HelperFunctions.ps1")
 
 $type = $env:type
-$country = $env:country
-if ($env:startArtifactVersion) {
-    $startArtifactVersion = [System.Version]"$env:startArtifactVersion"
-}
-else {
-    $startArtifactVersion = [System.Version]"0.0.0.0"
-}
+$version = $env:version
 $registryPassword = $env:registryPassword
 $registry = 'fkregistry'
 $registryFQ = "$registry.azurecr.io"
@@ -22,7 +16,7 @@ $orasExePath = Join-Path './temp' 'oras.exe' -Resolve
 $registryPassword | & $orasExePath login --username $registry --password-stdin $registryFQ
 
 Write-Host "Type: $type"
-Write-Host "Country: $country"
+Write-Host "Version: $version"
 Write-Host "StartArtifactVersion: $startArtifactVersion"
 
 $existingTags = @()
@@ -32,13 +26,14 @@ if ("$?" -eq "0") {
     $existingTags | Out-Host
 }
 
-$artifacts = Get-BcArtifactUrl -type $type -country $country -select all | Where-Object { [System.Version]$_.Split('/')[4] -ge $startArtifactVersion }
+$artifacts = Get-BcArtifactUrl -type $type -version $version -select all | Where-Object { [System.Version]$_.Split('/')[4] -ge $startArtifactVersion }
 $artifacts | ForEach-Object {
     $artifactUrl = $_
-    $tag = "$($artifactUrl.Split('/')[4])-$country"
+    $country = $artifactUrl.Split('/')[5]
+    $tag = "$version-$country"
     if ($existingTags -notcontains $tag) {
         Write-Host $artifactUrl
-        if ($country -eq 'core' -or $country -eq 'platform') {
+        if ($country -eq 'core') {
             $path = Download-Artifacts -artifactUrl $artifactUrl
             Set-Location -Path (Join-Path $path '..' -Resolve)
             & $orasExePath push "$registryFQ/$($type):$tag" .\$country\:application/x-tar
@@ -47,6 +42,9 @@ $artifacts | ForEach-Object {
             $paths = Download-Artifacts -artifactUrl $artifactUrl -includePlatform
             Set-Location -Path (Join-Path $paths[0] '..' -Resolve)
             & $orasExePath push "$registryFQ/$($type):$tag" .\$country\:application/x-tar .\platform\:application/x-tar
+            if ($country -eq 'w1' -and $existingTags -notcontains "$version-platform") {
+                & $orasExePath push "$registryFQ/$($type):$version-platform" .\platform\:application/x-tar
+            }
         }
     }
 }
