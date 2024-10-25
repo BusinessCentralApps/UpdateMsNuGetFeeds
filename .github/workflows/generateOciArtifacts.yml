@@ -51,7 +51,7 @@ jobs:
 
   GenerateOnpremPlatFormOciArtifacts:
     runs-on: [ windows-latest ]
-    name: Sandbox-Platform
+    name: Onprem-Platform
     steps:
       - name: Checkout
         uses: actions/checkout@v4
