@@ -10,11 +10,29 @@ on:
         default: ''
 
 jobs:
+  GenerateSandboxPlatFormOciArtifacts:
+    runs-on: [ windows-latest ]
+    name: Sandbox-Platform
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: UpdateOciArtifacts
+        shell: pwsh
+        env:
+          type: sandbox
+          country: platform
+          startArtifactVersion: ${{ github.event.inputs.startArtifactVersion }}
+          registryPassword: ${{ secrets.REGISTRYPASSWORD}}
+        run: |
+          . (Join-Path $env:GITHUB_WORKSPACE "UpdateOciArtifacts.ps1")
+
   GenerateSandboxOciArtifacts:
+    needs: GenerateSandboxPlatFormOciArtifacts
     runs-on: [ windows-latest ]
     strategy:
       matrix:
-        country: [ "w1","it","ua","tw","tr","th","sk","si","se","rs","ro","pl","pt","ph","pe","nz","no","nl","mx","lv","lt","kr","jp","us","is","cz","ie","hu","hr","hk","gr","gb","fr","fi","es","ee","de","core","dk","co","ch","ca","br","bg","be","base","au","at","vn","in" ]
+        country: [ "w1" ]
       fail-fast: false
     name: Sandbox-${{ matrix.country }}
     steps:
@@ -31,11 +49,29 @@ jobs:
         run: |
           . (Join-Path $env:GITHUB_WORKSPACE "UpdateOciArtifacts.ps1")
 
+  GenerateOnpremPlatFormOciArtifacts:
+    runs-on: [ windows-latest ]
+    name: Sandbox-Platform
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: UpdateOciArtifacts
+        shell: pwsh
+        env:
+          type: onprem
+          country: platform
+          startArtifactVersion: ${{ github.event.inputs.startArtifactVersion }}
+          registryPassword: ${{ secrets.REGISTRYPASSWORD}}
+        run: |
+          . (Join-Path $env:GITHUB_WORKSPACE "UpdateOciArtifacts.ps1")
+
   GenerateOnpremOciArtifacts:
+    needs: GenerateOnpremPlatFormOciArtifacts
     runs-on: [ windows-latest ]
     strategy:
       matrix:
-        country: [ "w1","se","nz","no","nl","na","it","is","gb","at","fi","au","be","ch","fr","de","dk","es","cz","ca","mx","itch","frch","frca","frbe","dech","nlbe","us","in" ]
+        country: [ "w1" ]
       fail-fast: false
     name: Onprem-${{ matrix.country }}
     steps:
