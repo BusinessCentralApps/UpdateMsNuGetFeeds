@@ -1,9 +1,10 @@
-name: Generate NuGet Packages
+name: Generate OCI artifacts
 
 # Controls when the workflow will run
 on:
   workflow_dispatch:
-    startArtifactVersion:
+    inputs:
+      startArtifactVersion:
         description: Starting with Business Central Version
         required: false
         default: ''
