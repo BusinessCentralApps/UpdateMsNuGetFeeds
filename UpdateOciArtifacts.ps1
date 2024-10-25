@@ -17,21 +17,37 @@ $version = "1.2.0"
 $filename = Join-Path $env:TEMP "oras_$($version)_windows_amd64.zip"
 Invoke-RestMethod -Method GET -UseBasicParsing -Uri "https://github.com/oras-project/oras/releases/download/v$($version)/oras_$($version)_windows_amd64.zip" -OutFile $filename
 Expand-Archive -Path $filename -DestinationPath temp
+$orasExePath = Join-Path './temp' 'oras.exe' -Resolve
 
-$registryPassword | ./temp/oras.exe login --username $registry --password-stdin $registryFQ
+$registryPassword | & $orasExePath login --username $registry --password-stdin $registryFQ
 
 Write-Host "Type: $type"
 Write-Host "Country: $country"
 Write-Host "StartArtifactVersion: $startArtifactVersion"
 
-$existingTags = ./temp/oras.exe repo tags "$registryFQ/$type"
-$existingTags | Out-Host
+try {
+    $existingTags = & $orasExePath repo tags "$registryFQ/$type"
+    $existingTags | Out-Host
+}
+catch {
+    $existingTags = @()
+}
 
 $artifacts = get-bcartifacturl -type $type -country $country -select all | Where-Object { [System.Version]$_.Split('/')[4] -ge $startArtifactVersion }
 $artifacts | ForEach-Object {
-    $tag = "$("$_".Split('/')[4])-$("$_".Split('/')[5])"
+    $artifactUrl = $_
+    $tag = "$($artifactUrl.Split('/')[4])-$country"
     if ($existingTags -notcontains $tag) {
-        Write-Host $_
-
+        Write-Host $artifactUrl
+        if ($country -eq 'core' -or $country -eq 'platform') {
+            $paths = Download-Artifacts -artifactUrl $artifactUrl
+            Set-Location -Path (Join-Path $paths[0] '..' -Resolve)
+            & $orasExePath push "$registryFQ/$($type):$tag" .\$country\:application/x-tar
+        }
+        else {
+            $paths = Download-Artifacts -artifactUrl $artifactUrl -includePlatform
+            Set-Location -Path (Join-Path $paths[0] '..' -Resolve)
+            & $orasExePath push "$registryFQ/$($type):$tag" .\$country\:application/x-tar .\platform\:application/x-tar
+        }
     }
 }
