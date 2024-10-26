@@ -10,7 +10,7 @@ on:
         default: ''
 
 jobs:
-  GetVersions:
+  GetBcVersions:
     runs-on: [ windows-latest ]
     outputs:
       versionMatrixJson: ${{ steps.GetVersions.outputs.versionMatrixJson }}
@@ -20,15 +20,16 @@ jobs:
 
       - name: GetVersions
         shell: pwsh
+        id: GetVersions
         env:
           startArtifactVersion: ${{ github.event.inputs.startArtifactVersion }}
         run: |
           . (Join-Path $env:GITHUB_WORKSPACE "GetVersions.ps1")
 
   GenerateOciArtifacts:
-    needs: GetVersions
+    needs: GetBcVersions
     runs-on: [ windows-latest ]
-    strategy: ${{ fromJson(needs.GetVersions.outputs.versionMatrixJson) }}
+    strategy: ${{ fromJson(needs.GetBcVersions.outputs.versionMatrixJson) }}
     name: ${{ matrix.type }}-${{ matrix.version }}
     steps:
       - name: Checkout

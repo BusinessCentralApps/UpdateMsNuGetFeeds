@@ -26,25 +26,36 @@ if ("$?" -eq "0") {
     $existingTags | Out-Host
 }
 
-$artifacts = Get-BcArtifactUrl -type $type -version $version -select all | Where-Object { [System.Version]$_.Split('/')[4] -ge $startArtifactVersion }
-$artifacts | ForEach-Object {
-    $artifactUrl = $_
-    $country = $artifactUrl.Split('/')[5]
-    $tag = "$version-$country"
-    if ($existingTags -notcontains $tag) {
-        Write-Host $artifactUrl
-        if ($country -eq 'core') {
-            $path = Download-Artifacts -artifactUrl $artifactUrl
-            Set-Location -Path (Join-Path $path '..' -Resolve)
-            & $orasExePath push "$registryFQ/$($type):$tag" .\$country\:application/x-tar
+$versions = Get-BcArtifactUrl -type $type -version $version -country w1 -select all | Sort-Object { [System.Version]$_.Split('/')[4] } -Descending | ForEach-Object { $_.Split('/')[4] } | Select-Object -First 2
+$versions | ForEach-Object {
+    $thisVersion = $_
+    Write-Host "Version: $thisVersion"
+    $artifacts = Get-BcArtifactUrl -type $type -version $thisVersion -select all | Where-Object { [System.Version]$_.Split('/')[4] -ge $startArtifactVersion }
+    $artifacts | ForEach-Object {
+        $artifactUrl = $_
+        Write-Host "ArtifactUrl: $artifactUrl"
+        $country = $artifactUrl.Split('/')[5]
+        $tag = "$thisVersion-$country"
+        Write-Host -NoNewline "Tag: $tag "
+        if ($existingTags -contains $tag) {
+            Write-Host "exists"
         }
         else {
-            $paths = Download-Artifacts -artifactUrl $artifactUrl -includePlatform
-            Set-Location -Path (Join-Path $paths[0] '..' -Resolve)
-            & $orasExePath push "$registryFQ/$($type):$tag" .\$country\:application/x-tar .\platform\:application/x-tar
-            if ($country -eq 'w1' -and $existingTags -notcontains "$version-platform") {
-                & $orasExePath push "$registryFQ/$($type):$version-platform" .\platform\:application/x-tar
+            Write-Host "doesn't exist"
+            if ($country -eq 'core') {
+                $path = Download-Artifacts -artifactUrl $artifactUrl
+                Set-Location -Path (Join-Path $path '..' -Resolve)
+                & $orasExePath push "$registryFQ/$($type):$tag" .\$country\:application/x-tar
+            }
+            else {
+                $paths = Download-Artifacts -artifactUrl $artifactUrl -includePlatform
+                Set-Location -Path (Join-Path $paths[0] '..' -Resolve)
+                & $orasExePath push "$registryFQ/$($type):$tag" .\$country\:application/x-tar .\platform\:application/x-tar
+                if ($country -eq 'w1' -and $existingTags -notcontains "$thisVersion-platform") {
+                    & $orasExePath push "$registryFQ/$($type):$thisVersion-platform" .\platform\:application/x-tar
+                }
             }
         }
     }
+    Flush-ContainerHelperCache
 }

@@ -8,12 +8,12 @@ else {
 }
 
 $versionMatrix = @{"matrix" = @{ "include" = @() }; "fail-fast" = $false; "max-parallel" = 1 }
+$sandboxVersions = @(Get-BcArtifactUrl -type 'sandbox' -country 'w1' -select all | Where-Object { [System.Version]$_.Split('/')[4] -ge $startArtifactVersion } | ForEach-Object { $version = [System.Version]$_.Split('/')[4]; return "$($version.Major).$($version.Minor)" } | Select-Object -Unique)
 
-$sandboxVersions = @(Get-BcArtifactUrl -type 'sandbox' -country 'w1' -select all | Where-Object { [System.Version]$_.Split('/')[4] -ge $startArtifactVersion } | ForEach-Object { $_.Split('/')[4] })
 $sandboxVersions | ForEach-Object {
     $versionMatrix.matrix.include += @{"type" = "sandbox"; "version" = "$_" }
 }
-$onpremVersions = @(Get-BcArtifactUrl -type 'onprem' -country 'w1' -select all | Where-Object { [System.Version]$_.Split('/')[4] -ge $startArtifactVersion } | ForEach-Object { $_.Split('/')[4] })
+$onpremVersions = @(Get-BcArtifactUrl -type 'onprem' -country 'w1' -select all | Where-Object { [System.Version]$_.Split('/')[4] -ge $startArtifactVersion } | ForEach-Object { $version = [System.Version]$_.Split('/')[4]; return "$($version.Major).$($version.Minor)" } | Select-Object -Unique)
 $onpremVersions | ForEach-Object {
     $versionMatrix.matrix.include += @{"type" = "onprem"; "version" = "$_" }
 }
