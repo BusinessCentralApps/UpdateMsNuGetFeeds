@@ -7,7 +7,7 @@ else {
     $startArtifactVersion = [System.Version]"0.0.0.0"
 }
 
-$versionMatrix = @{"matrix" = @{ "include" = @() }; "fail-fast" = $false; "max-parallel" = 1 }
+$versionMatrix = @{"matrix" = @{ "include" = @() }; "fail-fast" = $false; "max-parallel" = 3 }
 $sandboxVersions = @(Get-BcArtifactUrl -type 'sandbox' -country 'w1' -select all | Where-Object { [System.Version]$_.Split('/')[4] -ge $startArtifactVersion } | ForEach-Object { $version = [System.Version]$_.Split('/')[4]; return "$($version.Major).$($version.Minor)" } | Select-Object -Unique)
 
 $sandboxVersions | ForEach-Object {

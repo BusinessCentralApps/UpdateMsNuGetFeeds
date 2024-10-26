@@ -31,9 +31,10 @@ $versions = Get-BcArtifactUrl -type $type -version $version -country w1 -select 
 $versions | ForEach-Object {
     $thisVersion = $_
     Write-Host "Version: $thisVersion"
-    $artifacts = Get-BcArtifactUrl -type $type -version $thisVersion -select all | Where-Object { [System.Version]$_.Split('/')[4] -ge $startArtifactVersion }
-    $artifacts | ForEach-Object {
-        $artifactUrl = $_
+    $countries = @('w1') + @(Get-BcArtifactUrl -type sandbox -version $thisVersion -select all | ForEach-Object { $_.Split('/')[5] } | Where-Object { $_ -ne 'w1' })
+    $countries | ForEach-Object {
+        $country = $_
+        $artifactUrl = Get-BcArtifactUrl -type $type -version $thisVersion -country $country
         Write-Host "ArtifactUrl: $artifactUrl"
         $country = $artifactUrl.Split('/')[5]
         $tag = "$thisVersion-$country"
