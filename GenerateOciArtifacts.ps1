@@ -52,12 +52,13 @@ $versions | ForEach-Object {
             else {
                 $paths = Download-Artifacts -artifactUrl $artifactUrl -includePlatform
                 Set-Location -Path (Join-Path $paths[0] '..' -Resolve)
-                & $orasExePath push "$registryFQ/$($type):$tag" .\$country\:application/x-tar .\platform\:application/x-tar
                 if ($country -eq 'w1' -and $existingTags -notcontains "$thisVersion-platform") {
                     & $orasExePath push "$registryFQ/$($type):$thisVersion-platform" .\platform\:application/x-tar
                 }
+                & $orasExePath push "$registryFQ/$($type):$tag" .\platform\:application/x-tar .\$country\:application/x-tar
             }
         }
     }
+    Set-Location -Path $ENV:GITHUB_WORKSPACE
     Flush-ContainerHelperCache
 }
