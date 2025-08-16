@@ -3,7 +3,7 @@ name: Update Public Microsoft NuGet Feeds
 on:
   workflow_dispatch:
   schedule:
-    - cron: '30 1 * * 7'
+    - cron: '30 1 * * 0'
 
 jobs:
   UpdatePublicNuGetFeeds:
@@ -19,5 +19,6 @@ jobs:
           FEED_TOKEN: ${{ secrets.FEED_TOKEN }}
         run: |
           . (Join-Path $env:GITHUB_WORKSPACE "UpdatePublicNuGetFeeds.ps1")
+
 
 
